@@ -12,7 +12,9 @@ import { prismaClient, Prisma } from "@repo/db/client";
 import bcrypt from "bcrypt";
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: "*", // or specific URL like 'http://localhost:3000'
+}));
 app.use(express.json());
 
 app.post("/signup", async (req, res) => {
@@ -67,6 +69,8 @@ app.post("/signin", async (req, res) => {
     const user = await prismaClient.user.findUnique({
       where: { email: username },
     });
+    console.log(user);
+    
 
     if (!user) {
       return res.status(401).json({
@@ -136,7 +140,7 @@ app.get("/chats/:roomId", async (req, res) => {
     const messages = await prismaClient.chat.findMany({
       where: { roomId },
       orderBy: { id: "desc" },
-      take: 50,
+      take: 1000,
     });
 
     res.json({ messages });

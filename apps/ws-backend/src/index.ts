@@ -59,6 +59,7 @@ wss.on("connection", (ws, request) => {
     // ---- Message Handling ----
     ws.on("message", async (raw) => {
       try {
+          let parsedData;
         const msg = JSON.parse(raw.toString());
 
         switch (msg.type) {
@@ -90,7 +91,6 @@ wss.on("connection", (ws, request) => {
 
             // Check if user joined the room first
             if (!user.rooms.has(roomId)) {
-              console.log("❌ User not in room");
               return;
             }
 
@@ -98,10 +98,8 @@ wss.on("connection", (ws, request) => {
             const room = await prismaClient.room.findUnique({
               where: { id: numericRoomId },
             });
-            console.log("i ham here", room);
 
             if (!room) return;
-            console.log("📨 Chat message received:", msg);
 
             await prismaClient.chat.create({
               data: { roomId: numericRoomId, message, userId },
