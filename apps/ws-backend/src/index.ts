@@ -115,6 +115,69 @@ wss.on("connection", (ws, request) => {
             break;
           }
 
+          case "camera_update": {
+            const { roomId: rawRoomId, cameraOffset, cameraZoom } = msg;
+            const roomId = String(rawRoomId);
+
+            // Check if user joined the room first
+            if (!user.rooms.has(roomId)) {
+              return;
+            }
+
+            // Broadcast camera update to all users in the room
+            broadcast(roomId, {
+              type: "camera_update",
+              roomId,
+              cameraOffset,
+              cameraZoom,
+              senderId: userId,
+              timestamp: Date.now(),
+            });
+            break;
+          }
+
+          case "delete_shape": {
+            const { roomId: rawRoomId, shapeId } = msg;
+            const roomId = String(rawRoomId);
+            const numericRoomId = Number(roomId);
+
+            if (isNaN(numericRoomId) || !shapeId) return;
+
+            // Check if user joined the room first
+            if (!user.rooms.has(roomId)) {
+              return;
+            }
+
+            // Find and delete the chat message containing this shape
+            const chats = await prismaClient.chat.findMany({
+              where: { roomId: numericRoomId },
+            });
+
+            for (const chat of chats) {
+              try {
+                const parsedMessage = JSON.parse(chat.message);
+                if (parsedMessage.shape && parsedMessage.shape.id === shapeId) {
+                  await prismaClient.chat.delete({
+                    where: { id: chat.id },
+                  });
+                  break;
+                }
+              } catch (e) {
+                // Skip invalid JSON
+              }
+            }
+
+            // Broadcast deletion to all users in the room
+            broadcast(roomId, {
+              type: "delete_shape",
+              roomId,
+              shapeId,
+              senderId: userId,
+              timestamp: Date.now(),
+            });
+            break;
+          }
+
           default:
             console.warn("⚠️ Unknown message type:", msg.type);
         }
