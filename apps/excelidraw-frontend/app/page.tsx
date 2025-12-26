@@ -1,6 +1,6 @@
 import { Button } from "@repo/ui/button";
 import { Card } from "@repo/ui/card";
-import { Pencil, Share2, Users2, Sparkles, Github, Download, ArrowRight, Zap, Shield, Lock, Cloud, Palette, MessageSquare, Layers, Code2, Trophy, Star, Menu, X, CheckCircle, Rocket, Globe } from "lucide-react";
+import { Pencil, Share2, Users2, Sparkles, ArrowRight, CheckCircle, Circle, Square, Type, Eraser, ZoomIn, PenTool, Move, Layers } from "lucide-react";
 import Link from "next/link";
 
 export default function Home() {
@@ -71,28 +71,29 @@ export default function Home() {
               <div className="flex justify-center animate-fadeInUp">
                 <div className="inline-flex items-center px-5 py-2.5 bg-white/10 backdrop-blur-xl border border-white/20 text-gray-200 rounded-full text-sm font-medium shadow-lg">
                   <Sparkles className="w-4 h-4 mr-2 text-yellow-400" />
-                  <span>Trusted by 10,000+ users worldwide</span>
+                  <span>Collaborative drawing made simple</span>
                 </div>
               </div>
               
               {/* Main Heading */}
               <div className="text-center space-y-4 animate-fadeInUp">
                 <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold text-white leading-tight">
-                  Collaborate.
+                  Draw Together.
                 </h1>
                 <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold text-white leading-tight">
-                  Create.
+                  Create Together.
                 </h1>
                 <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold text-blue-400 leading-tight">
-                  Innovate.
+                  In Real-Time.
                 </h1>
               </div>
               
               {/* Subheading */}
               <p className="text-center mx-auto max-w-3xl text-xl md:text-2xl text-gray-300 leading-relaxed animate-fadeInUp">
-                The most intuitive collaborative whiteboard for teams who want to{" "}
-                <span className="text-white font-semibold">visualize ideas</span> and{" "}
-                <span className="text-white font-semibold">work together</span> in real-time.
+                A collaborative canvas with{" "}
+                <span className="text-white font-semibold">infinite zoom</span>,{" "}
+                <span className="text-white font-semibold">real-time sync</span>, and{" "}
+                <span className="text-white font-semibold">powerful drawing tools</span> for teams.
               </p>
               
               {/* CTA Buttons */}
@@ -137,55 +138,119 @@ export default function Home() {
           {/* Section Header */}
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Everything you need to
+              Powerful Drawing Tools
               <span className="block text-blue-400 mt-2">
-                create together
+                for Every Need
               </span>
             </h2>
             <p className="text-lg text-gray-300 max-w-2xl mx-auto">
-              Powerful features designed for modern teams
+              Everything you need to create beautiful diagrams and collaborate seamlessly
             </p>
           </div>
           
           {/* Feature Cards Grid */}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
-            {/* Card 1 */}
+            {/* Card 1 - Drawing Tools */}
             <Card className="p-8 bg-white/10 backdrop-blur-xl border-2 border-white/20 hover:border-blue-400/50 transition-all duration-300 rounded-3xl">
               <div className="mb-5">
                 <div className="inline-flex p-3 rounded-xl bg-blue-600">
-                  <Share2 className="h-6 w-6 text-white" />
+                  <Pencil className="h-6 w-6 text-white" />
                 </div>
               </div>
-              <h3 className="text-xl font-bold text-white mb-3">Real-time Sync</h3>
-              <p className="text-gray-300 leading-relaxed">
-                Watch changes happen instantly as your team collaborates.
+              <h3 className="text-xl font-bold text-white mb-3">Rich Drawing Tools</h3>
+              <p className="text-gray-300 leading-relaxed mb-4">
+                Rectangles, circles, lines, arrows, freehand drawing, text, and eraser - all the tools you need.
               </p>
+              <div className="flex gap-2 flex-wrap">
+                <span className="px-2 py-1 bg-white/10 rounded text-xs text-gray-300">Shapes</span>
+                <span className="px-2 py-1 bg-white/10 rounded text-xs text-gray-300">Text</span>
+                <span className="px-2 py-1 bg-white/10 rounded text-xs text-gray-300">Arrows</span>
+              </div>
             </Card>
 
-            {/* Card 2 */}
+            {/* Card 2 - Real-time Collaboration */}
             <Card className="p-8 bg-white/10 backdrop-blur-xl border-2 border-white/20 hover:border-teal-400/50 transition-all duration-300 rounded-3xl">
               <div className="mb-5">
                 <div className="inline-flex p-3 rounded-xl bg-teal-600">
                   <Users2 className="h-6 w-6 text-white" />
                 </div>
               </div>
-              <h3 className="text-xl font-bold text-white mb-3">Multiplayer Magic</h3>
-              <p className="text-gray-300 leading-relaxed">
-                See live cursors and presence indicators in real-time.
+              <h3 className="text-xl font-bold text-white mb-3">Real-Time Collaboration</h3>
+              <p className="text-gray-300 leading-relaxed mb-4">
+                Work together with your team. See changes instantly with WebSocket-powered sync.
               </p>
+              <div className="flex gap-2 flex-wrap">
+                <span className="px-2 py-1 bg-white/10 rounded text-xs text-gray-300">Live Sync</span>
+                <span className="px-2 py-1 bg-white/10 rounded text-xs text-gray-300">Multi-user</span>
+              </div>
             </Card>
 
-            {/* Card 3 */}
+            {/* Card 3 - Infinite Canvas */}
             <Card className="p-8 bg-white/10 backdrop-blur-xl border-2 border-white/20 hover:border-purple-400/50 transition-all duration-300 rounded-3xl">
               <div className="mb-5">
                 <div className="inline-flex p-3 rounded-xl bg-purple-600">
+                  <Move className="h-6 w-6 text-white" />
+                </div>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">Infinite Canvas</h3>
+              <p className="text-gray-300 leading-relaxed mb-4">
+                Pan, zoom, and explore unlimited space. Your canvas grows with your ideas.
+              </p>
+              <div className="flex gap-2 flex-wrap">
+                <span className="px-2 py-1 bg-white/10 rounded text-xs text-gray-300">Pan & Zoom</span>
+                <span className="px-2 py-1 bg-white/10 rounded text-xs text-gray-300">Grid View</span>
+              </div>
+            </Card>
+
+            {/* Card 4 - Persistent State */}
+            <Card className="p-8 bg-white/10 backdrop-blur-xl border-2 border-white/20 hover:border-green-400/50 transition-all duration-300 rounded-3xl">
+              <div className="mb-5">
+                <div className="inline-flex p-3 rounded-xl bg-green-600">
+                  <Layers className="h-6 w-6 text-white" />
+                </div>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">State Persistence</h3>
+              <p className="text-gray-300 leading-relaxed mb-4">
+                Your canvas position and zoom level are saved. Return exactly where you left off.
+              </p>
+              <div className="flex gap-2 flex-wrap">
+                <span className="px-2 py-1 bg-white/10 rounded text-xs text-gray-300">Auto-save</span>
+                <span className="px-2 py-1 bg-white/10 rounded text-xs text-gray-300">Resume</span>
+              </div>
+            </Card>
+
+            {/* Card 5 - Beautiful UI */}
+            <Card className="p-8 bg-white/10 backdrop-blur-xl border-2 border-white/20 hover:border-pink-400/50 transition-all duration-300 rounded-3xl">
+              <div className="mb-5">
+                <div className="inline-flex p-3 rounded-xl bg-pink-600">
                   <Sparkles className="h-6 w-6 text-white" />
                 </div>
               </div>
-              <h3 className="text-xl font-bold text-white mb-3">Simple & Powerful</h3>
-              <p className="text-gray-300 leading-relaxed">
-                Intuitive tools help you create perfect diagrams effortlessly.
+              <h3 className="text-xl font-bold text-white mb-3">Beautiful Interface</h3>
+              <p className="text-gray-300 leading-relaxed mb-4">
+                Glass morphism design with gradient backgrounds and smooth animations.
               </p>
+              <div className="flex gap-2 flex-wrap">
+                <span className="px-2 py-1 bg-white/10 rounded text-xs text-gray-300">Modern UI</span>
+                <span className="px-2 py-1 bg-white/10 rounded text-xs text-gray-300">Responsive</span>
+              </div>
+            </Card>
+
+            {/* Card 6 - Zoom Controls */}
+            <Card className="p-8 bg-white/10 backdrop-blur-xl border-2 border-white/20 hover:border-orange-400/50 transition-all duration-300 rounded-3xl">
+              <div className="mb-5">
+                <div className="inline-flex p-3 rounded-xl bg-orange-600">
+                  <ZoomIn className="h-6 w-6 text-white" />
+                </div>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">Advanced Zoom</h3>
+              <p className="text-gray-300 leading-relaxed mb-4">
+                Zoom buttons and mouse wheel support. Scale from 10% to 500% smoothly.
+              </p>
+              <div className="flex gap-2 flex-wrap">
+                <span className="px-2 py-1 bg-white/10 rounded text-xs text-gray-300">Zoom In/Out</span>
+                <span className="px-2 py-1 bg-white/10 rounded text-xs text-gray-300">Reset</span>
+              </div>
             </Card>
           </div>
         </div>
@@ -197,10 +262,10 @@ export default function Home() {
           <div className="max-w-3xl mx-auto">
             <div className="bg-white/10 backdrop-blur-xl border-2 border-white/20 rounded-3xl shadow-2xl p-12 text-center">
               <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                Ready to Get Started?
+                Start Drawing Together
               </h2>
               <p className="text-lg text-gray-300 mb-10 max-w-xl mx-auto">
-                Join thousands of teams creating better together. Start for free, no credit card required.
+                Join your team on an infinite canvas. Create rooms, draw together, and bring your ideas to life.
               </p>
               
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
