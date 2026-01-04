@@ -18,7 +18,8 @@
     "@repo/backend-common": "workspace:*",
     "@types/jsonwebtoken": "^9.0.10",
     "@repo/common":"workspace:*",
-    "@repo/db":"workspace:*"
+    "@repo/db":"workspace:*",
+    "typescript": "^5.3.3"
   },
   "keywords": [],
   "author": "",

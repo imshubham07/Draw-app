@@ -408,7 +408,7 @@ export class Game {
                 if (this.textInput.parentNode) {
                     this.textInput.remove();
                 }
-            } catch (e) {
+            } catch {
                 // Element already removed, ignore
             }
             this.textInput = null;

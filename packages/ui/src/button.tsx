@@ -6,6 +6,8 @@ interface ButtonProps {
   onClick?: () => void;
   size?: "lg" | "sm";
   children: ReactNode;
+  disabled?: boolean;
+  style?: React.CSSProperties;
 }
 
 export const Button = ({ 
@@ -13,7 +15,9 @@ export const Button = ({
   size = "lg", 
   variant = "primary", 
   onClick,
-  children
+  children,
+  disabled = false,
+  style
 }: ButtonProps) => {
   const baseStyles = "inline-flex items-center justify-center rounded-xl font-semibold transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
   
@@ -32,6 +36,8 @@ export const Button = ({
     <button
       className={`${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
       onClick={onClick}
+      disabled={disabled}
+      style={style}
     >
       {children}
     </button>

@@ -30,7 +30,7 @@ export async function initDraw(
 ) {
   const ctx = canvas.getContext("2d");
 
-  let existingShapes: Shape[] = await getExistingShapes(roomId);
+  const existingShapes: Shape[] = await getExistingShapes(roomId);
   if (!ctx) return;
 
   socket.onmessage = (event) => {
@@ -60,7 +60,7 @@ export async function initDraw(
     const width = e.clientX - startX;
     const height = e.clientY - startY;
 
-    // @ts-ignore
+    // @ts-expect-error - selectedTool is added to window at runtime
     const selectedTool = window.selectedTool;
     let shape: Shape | null = null;
     if (selectedTool === "rect") {
@@ -104,7 +104,7 @@ export async function initDraw(
       const height = e.clientY - startY;
       clearCanvas(existingShapes, canvas, ctx);
       ctx.strokeStyle = "rgba(255,255,255)";
-      //@ts-ignore
+      // @ts-expect-error - selectedTool is added to window at runtime
       const selectedTool = window.selectedTool;
       if (selectedTool === "rect") {
         ctx.strokeRect(startX, startY, width, height);

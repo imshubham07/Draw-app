@@ -1,24 +1,23 @@
 import { Button } from "@repo/ui/button";
 import { Card } from "@repo/ui/card";
-import { Pencil, Share2, Users2, Sparkles, ArrowRight, CheckCircle, Circle, Square, Type, Eraser, ZoomIn, PenTool, Move, Layers } from "lucide-react";
+import { Pencil, Users2, Sparkles, ArrowRight, CheckCircle, ZoomIn, Move, Layers } from "lucide-react";
 import Link from "next/link";
 
 export default function Home() {
   return (
     <div className="min-h-screen w-full relative overflow-hidden bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-blue-500/30 rounded-full blur-3xl animate-blob"></div>
-        <div className="absolute top-0 right-0 w-96 h-96 bg-purple-500/30 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
-        <div className="absolute bottom-0 left-1/2 w-96 h-96 bg-pink-500/30 rounded-full blur-3xl animate-blob animation-delay-4000"></div>
+      {/* Animated Background Elements - Optimized */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 left-0 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-blob"></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
       </div>
 
-      {/* Grid Pattern Overlay */}
+      {/* Grid Pattern Overlay - Optimized */}
       <div 
-        className="absolute inset-0 opacity-10" 
+        className="absolute inset-0 opacity-5 pointer-events-none" 
         style={{
           backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
-          backgroundSize: '50px 50px'
+          backgroundSize: '60px 60px'
         }}
       ></div>
 
@@ -35,16 +34,16 @@ export default function Home() {
               </span>
             </Link>
             <div className="hidden md:flex items-center gap-8">
-              <Link href="#features" className="text-gray-300 hover:text-white transition-colors font-medium text-sm">
+              <Link href="#features" prefetch={false} className="text-gray-300 hover:text-white transition-colors font-medium text-sm">
                 Features
               </Link>
-              <Link href="#testimonials" className="text-gray-300 hover:text-white transition-colors font-medium text-sm">
+              <Link href="#testimonials" prefetch={false} className="text-gray-300 hover:text-white transition-colors font-medium text-sm">
                 Testimonials
               </Link>
-              <Link href="#pricing" className="text-gray-300 hover:text-white transition-colors font-medium text-sm">
+              <Link href="#pricing" prefetch={false} className="text-gray-300 hover:text-white transition-colors font-medium text-sm">
                 Pricing
               </Link>
-              <Link href="/dashboard" className="text-gray-300 hover:text-white transition-colors font-medium text-sm">
+              <Link href="/dashboard" prefetch={false} className="text-gray-300 hover:text-white transition-colors font-medium text-sm">
                 Dashboard
               </Link>
             </div>

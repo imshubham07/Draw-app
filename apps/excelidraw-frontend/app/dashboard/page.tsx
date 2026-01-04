@@ -49,9 +49,14 @@ export default function Dashboard() {
                     router.push(`/canvas/${roomResponse.data.room.id}`);
                 }
             }
-        } catch (err: any) {
-            if (err.response?.data?.message) {
-                setError(err.response.data.message);
+        } catch (err: unknown) {
+            if (err && typeof err === 'object' && 'response' in err) {
+                const error = err as { response?: { data?: { message?: string } } };
+                if (error.response?.data?.message) {
+                    setError(error.response.data.message);
+                } else {
+                    setError("Failed to create room. Please try again.");
+                }
             } else {
                 setError("Failed to create room. Please try again.");
             }
@@ -71,7 +76,7 @@ export default function Dashboard() {
             } else {
                 setError("Room not found");
             }
-        } catch (err: any) {
+        } catch {
             setError("Room not found or does not exist");
         } finally {
             setLoading(false);
