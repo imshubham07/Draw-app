@@ -31,6 +31,8 @@ COPY --from=deps /app/apps/http-backend/node_modules ./apps/http-backend/node_mo
 COPY packages ./packages
 COPY apps/http-backend ./apps/http-backend
 COPY turbo.json ./
+COPY package.json ./
+COPY pnpm-workspace.yaml ./
 
 # Build the backend
 WORKDIR /app/apps/http-backend
@@ -45,17 +47,23 @@ FROM base AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
+ENV NODE_PATH=/app/node_modules:/app/apps/http-backend/node_modules
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 httpbackend
 
-# Copy built files and dependencies from builder (which has all deps)
-COPY --from=builder /app/packages ./packages
+# Copy the entire workspace structure including node_modules
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/apps/http-backend/dist ./dist
-COPY --from=builder /app/apps/http-backend/package.json ./package.json
+COPY --from=builder /app/apps/http-backend/node_modules ./apps/http-backend/node_modules
+COPY --from=builder /app/packages ./packages
+COPY --from=builder /app/apps/http-backend/dist ./apps/http-backend/dist
+COPY --from=builder /app/apps/http-backend/package.json ./apps/http-backend/package.json
 
 USER httpbackend
+
+WORKDIR /app/apps/http-backend
 
 EXPOSE 3001
 

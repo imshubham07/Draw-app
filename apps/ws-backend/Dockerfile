@@ -31,6 +31,8 @@ COPY --from=deps /app/apps/ws-backend/node_modules ./apps/ws-backend/node_module
 COPY packages ./packages
 COPY apps/ws-backend ./apps/ws-backend
 COPY turbo.json ./
+COPY package.json ./
+COPY pnpm-workspace.yaml ./
 
 # Build the backend
 WORKDIR /app/apps/ws-backend
@@ -45,17 +47,23 @@ FROM base AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
+ENV NODE_PATH=/app/node_modules:/app/apps/ws-backend/node_modules
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 wsbackend
 
-# Copy built files and dependencies from builder (which has all deps)
-COPY --from=builder /app/packages ./packages
+# Copy the entire workspace structure including node_modules
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/apps/ws-backend/dist ./dist
-COPY --from=builder /app/apps/ws-backend/package.json ./package.json
+COPY --from=builder /app/apps/ws-backend/node_modules ./apps/ws-backend/node_modules
+COPY --from=builder /app/packages ./packages
+COPY --from=builder /app/apps/ws-backend/dist ./apps/ws-backend/dist
+COPY --from=builder /app/apps/ws-backend/package.json ./apps/ws-backend/package.json
 
 USER wsbackend
+
+WORKDIR /app/apps/ws-backend
 
 EXPOSE 8080
 

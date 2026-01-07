@@ -1,62 +1,475 @@
-# Docker Setup for DrawApp
+# Docker Deployment Guide
 
-This project includes Docker configuration for easy deployment.
+This guide covers containerizing and deploying the Excalidraw application using Docker and Docker Compose.
 
-## Prerequisites
+## 📋 Prerequisites
 
-- Docker Desktop or Docker Engine (20.10+)
-- Docker Compose (2.0+)
+- **Docker Desktop** or **Docker Engine** 20.10+
+  - [Install Docker Desktop](https://www.docker.com/products/docker-desktop/)
+  - [Install Docker Engine (Linux)](https://docs.docker.com/engine/install/)
+- **Docker Compose** 2.0+
+  - Usually included with Docker Desktop
+  - [Install Docker Compose (Linux)](https://docs.docker.com/compose/install/)
+- **Git** for cloning the repository
 
-## Quick Start
-
-### 1. Build and Run All Services
-
-```bash
-# Build and start all services
-docker-compose up --build
-
-# Or run in detached mode
-docker-compose up -d --build
-```
-
-### 2. Access the Application
-
-- **Frontend**: http://localhost:3000
-- **HTTP Backend**: http://localhost:3001
-- **WebSocket Backend**: ws://localhost:8080
-- **Database**: localhost:5432
-
-## Individual Services
-
-### Build Individual Service
+### Verify Installation
 
 ```bash
-# Frontend
-docker build -t excalidraw-frontend -f apps/excelidraw-frontend/Dockerfile .
-
-# HTTP Backend
-docker build -t excalidraw-http -f apps/http-backend/Dockerfile .
-
-# WebSocket Backend
-docker build -t excalidraw-ws -f apps/ws-backend/Dockerfile .
+docker --version
+docker compose version
 ```
 
-### Run Individual Service
+## 🚀 Quick Start
+
+### 1. Clone the Repository
 
 ```bash
-# Frontend
-docker run -p 3000:3000 excalidraw-frontend
-
-# HTTP Backend
-docker run -p 3001:3001 excalidraw-http
-
-# WebSocket Backend
-docker run -p 8080:8080 excalidraw-ws
+git clone <your-repo-url>
+cd Excalidraw
 ```
 
-## Environment Variables
+### 2. Build and Start All Services
 
-Create a `.env` file in the root directory:
+```bash
+# Build images and start containers in foreground
+docker compose up --build
+
+# Or run in background (recommended for development)
+docker compose up -d --build
+```
+
+This will:
+- Build Docker images for all services
+- Start PostgreSQL, HTTP Backend, WebSocket Backend, and Frontend
+- Wait for database to be healthy before starting backends
+
+### 3. Access the Application
+
+| Service | URL |
+|---------|-----|
+| Frontend | http://localhost:3000 |
+| HTTP Backend API | http://localhost:3001 |
+| WebSocket | ws://localhost:8080 |
+| Database | localhost:5432 |
+
+### 4. Stop Services
+
+```bash
+# Stop all services
+docker compose down
+
+# Stop and remove volumes (clean slate)
+docker compose down -v
+
+# View running services
+docker compose ps
+```
+
+## 📊 Service Architecture
+
+The `docker-compose.yml` defines four services:
+
+### PostgreSQL Database
+```yaml
+service: db
+- Image: postgres:16-alpine
+- Port: 5432
+- Healthcheck: Every 10 seconds
+- Volume: Persists to `excalidraw-db-data`
+```
+
+**Environment:**
+- `POSTGRES_USER`: postgres
+- `POSTGRES_PASSWORD`: postgres
+- `POSTGRES_DB`: excalidraw
+
+### HTTP Backend
+```yaml
+service: http-backend
+- Port: 3001
+- Depends on: PostgreSQL (health check)
+- Auto-migrates Prisma schema on startup
+```
+
+**Environment:**
+- `DATABASE_URL`: postgresql://postgres:postgres@db:5432/excalidraw
+- `JWT_SECRET`: your-secret-key-change-in-production
+- `PORT`: 3001
+
+### WebSocket Backend
+```yaml
+service: ws-backend
+- Port: 8080
+- Depends on: PostgreSQL (health check)
+```
+
+**Environment:**
+- `PORT`: 8080
+
+### Next.js Frontend
+```yaml
+service: frontend
+- Port: 3000
+- Built for production
+```
+
+## 🔧 Configuration
+
+### Environment Variables
+
+Create a `.env` file in the root directory to override defaults:
+
+```env
+# Database
+DATABASE_URL=postgresql://postgres:postgres@db:5432/excalidraw
+
+# Security
+JWT_SECRET=your-super-secret-key-change-this-in-production
+
+# Service Ports (optional, edit docker-compose.yml if you need to change)
+# PORT_FRONTEND=3000
+# PORT_HTTP_BACKEND=3001
+# PORT_WS_BACKEND=8080
+# PORT_DB=5432
+```
+
+### Modifying docker-compose.yml
+
+#### Change Database Credentials
+```yaml
+db:
+  environment:
+    POSTGRES_USER: myuser
+    POSTGRES_PASSWORD: mypassword
+    POSTGRES_DB: mydatabase
+```
+
+#### Change Service Ports
+```yaml
+http-backend:
+  ports:
+    - "4001:3001"  # Maps container:host, change 4001 to desired port
+```
+
+#### Change JWT Secret
+```yaml
+http-backend:
+  environment:
+    JWT_SECRET: your-new-secret-key
+```
+
+## 📈 Monitoring
+
+### View Logs
+
+```bash
+# View all service logs
+docker compose logs
+
+# View specific service logs
+docker compose logs frontend
+docker compose logs http-backend
+docker compose logs ws-backend
+docker compose logs db
+
+# Follow logs in real-time
+docker compose logs -f
+
+# View last 50 lines
+docker compose logs --tail=50
+
+# View logs from the last hour
+docker compose logs --since=1h
+```
+
+### Check Service Status
+
+```bash
+# View running services
+docker compose ps
+
+# View detailed service info
+docker compose ps -a
+
+# Check specific container details
+docker inspect excalidraw-db
+```
+
+### Database Inspection
+
+```bash
+# Connect to PostgreSQL database
+docker compose exec db psql -U postgres -d excalidraw
+
+# View tables
+\dt
+
+# View schema
+\d
+
+# Exit
+\q
+```
+
+## 🛠️ Development Workflow
+
+### Rebuild Specific Service
+
+```bash
+# Rebuild frontend after code changes
+docker compose up -d --build frontend
+
+# Rebuild backend after code changes
+docker compose up -d --build http-backend
+docker compose up -d --build ws-backend
+```
+
+### View Container Shell
+
+```bash
+# Access frontend container
+docker compose exec frontend sh
+
+# Access backend container
+docker compose exec http-backend sh
+
+# Access database container
+docker compose exec db bash
+```
+
+### Restart Services
+
+```bash
+# Restart all services
+docker compose restart
+
+# Restart specific service
+docker compose restart http-backend
+
+# Hard restart (stop and start)
+docker compose down && docker compose up -d
+```
+
+## 🔍 Troubleshooting
+
+### Port Already in Use
+
+```bash
+# Find process using port 3000
+lsof -i :3000  # macOS/Linux
+netstat -ano | findstr :3000  # Windows
+
+# Kill process on macOS/Linux
+kill -9 <PID>
+
+# Or change the port in docker-compose.yml
+```
+
+### Container Won't Start
+
+```bash
+# Check logs for error messages
+docker compose logs <service-name>
+
+# Verify image built correctly
+docker images | grep excalidraw
+
+# Rebuild with no cache
+docker compose build --no-cache
+```
+
+### Database Connection Issues
+
+```bash
+# Check if database is healthy
+docker compose ps db
+
+# Check database logs
+docker compose logs db
+
+# Reset database (WARNING: deletes data)
+docker compose down -v
+docker compose up -d db
+```
+
+### Out of Disk Space
+
+```bash
+# Remove unused Docker resources
+docker system prune
+
+# Remove unused volumes
+docker volume prune
+
+# Remove unused images
+docker image prune
+```
+
+## 📦 Building for Production
+
+### Build Optimized Images
+
+```bash
+# Build with production flag
+docker compose -f docker-compose.prod.yml up -d --build
+
+# Or manually build images
+docker build -t excalidraw-frontend:1.0.0 -f apps/excelidraw-frontend/Dockerfile .
+docker build -t excalidraw-http:1.0.0 -f apps/http-backend/Dockerfile .
+docker build -t excalidraw-ws:1.0.0 -f apps/ws-backend/Dockerfile .
+```
+
+### Push to Container Registry
+
+```bash
+# Tag images for Docker Hub
+docker tag excalidraw-frontend:latest <your-username>/excalidraw-frontend:latest
+docker tag excalidraw-http:latest <your-username>/excalidraw-http:latest
+docker tag excalidraw-ws:latest <your-username>/excalidraw-ws:latest
+
+# Push to Docker Hub
+docker push <your-username>/excalidraw-frontend:latest
+docker push <your-username>/excalidraw-http:latest
+docker push <your-username>/excalidraw-ws:latest
+```
+
+## 🔐 Security Considerations
+
+### Change Default Credentials
+
+1. **Database Password**: Update `POSTGRES_PASSWORD` in docker-compose.yml
+2. **JWT Secret**: Set a strong `JWT_SECRET` environment variable
+3. **Production**: Never commit `.env` files with real secrets to git
+
+### Network Security
+
+```bash
+# Create isolated network (optional)
+docker network create excalidraw-network
+
+# Update docker-compose.yml to use the network
+# networks:
+#   - excalidraw-network
+```
+
+## 📊 Performance Tuning
+
+### Increase Container Resources
+
+Edit `docker-compose.yml`:
+
+```yaml
+services:
+  http-backend:
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+```
+
+### Database Optimization
+
+```bash
+# Access database shell
+docker compose exec db psql -U postgres -d excalidraw
+
+# Create indexes (example)
+CREATE INDEX idx_user_email ON users(email);
+
+# Analyze table performance
+ANALYZE;
+
+\q
+```
+
+## 🚀 Deployment to Cloud
+
+### Docker Hub
+
+```bash
+# Build and push
+docker compose build
+docker tag excalidraw-frontend <account>/excalidraw-frontend
+docker push <account>/excalidraw-frontend
+```
+
+### AWS ECR
+
+```bash
+# Authenticate with AWS
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <account>.dkr.ecr.us-east-1.amazonaws.com
+
+# Tag and push images
+docker tag excalidraw-frontend <account>.dkr.ecr.us-east-1.amazonaws.com/excalidraw-frontend
+docker push <account>.dkr.ecr.us-east-1.amazonaws.com/excalidraw-frontend
+```
+
+### Docker Swarm
+
+```bash
+# Initialize swarm
+docker swarm init
+
+# Deploy stack
+docker stack deploy -c docker-compose.yml excalidraw
+```
+
+### Kubernetes
+
+```bash
+# Convert docker-compose to Kubernetes manifests
+kompose convert -f docker-compose.yml -o kubernetes/
+
+# Deploy to Kubernetes
+kubectl apply -f kubernetes/
+```
+
+## 📝 Maintenance
+
+### Backup Database
+
+```bash
+# Dump database to file
+docker compose exec db pg_dump -U postgres excalidraw > backup.sql
+
+# Restore from backup
+docker compose exec -T db psql -U postgres excalidraw < backup.sql
+```
+
+### Clean Up
+
+```bash
+# Remove all stopped containers
+docker container prune
+
+# Remove unused images
+docker image prune
+
+# Full cleanup (WARNING: removes everything)
+docker system prune -a --volumes
+```
+
+## 📚 Additional Resources
+
+- [Docker Documentation](https://docs.docker.com/)
+- [Docker Compose Documentation](https://docs.docker.com/compose/)
+- [PostgreSQL Docker Image](https://hub.docker.com/_/postgres)
+- [Node.js Best Practices in Docker](https://github.com/nodejs/docker-node/blob/main/docs/BestPractices.md)
+
+## 🆘 Getting Help
+
+For issues related to:
+- **Docker/Compose**: Check [Docker docs](https://docs.docker.com/)
+- **Database**: See [PostgreSQL docs](https://www.postgresql.org/docs/)
+- **Application**: Check main [README.md](README.md)
+
+## 📄 License
+
+MIT
 
 ```env
 # Database

@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # PostgreSQL Database
   db:
@@ -36,7 +34,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    command: sh -c "npx prisma migrate deploy && node dist/index.js"
+    command: sh -c "cd /app/packages/db && npx prisma migrate deploy && cd /app/apps/http-backend && node dist/index.js"
 
   # WebSocket Backend
   ws-backend:
