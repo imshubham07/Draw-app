@@ -1,135 +1,361 @@
-# Turborepo starter
+# 🎨 Excalidraw Clone - Collaborative Drawing App
 
-This Turborepo starter is maintained by the Turborepo core team.
+A modern full-stack web application for real-time collaborative drawing. Built with Next.js, TypeScript, WebSockets, and PostgreSQL.
 
-## Using this example
+![Node](https://img.shields.io/badge/Node-20.x-green)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)
+![Next.js](https://img.shields.io/badge/Next.js-15.5-black)
+![Docker](https://img.shields.io/badge/Docker-Ready-blue)
+![License](https://img.shields.io/badge/License-MIT-green)
 
-Run the following command:
+## 📌 Table of Contents
 
-```sh
-npx create-turbo@latest
-```
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Quick Start](#quick-start)
+- [Development](#development)
+- [Scripts](#scripts)
+- [Docker Deployment](#docker-deployment)
+- [Database](#database)
+- [Architecture](#architecture)
+- [Contributing](#contributing)
 
-## What's inside?
+## ✨ Features
 
-This Turborepo includes the following packages/apps:
+- 🎯 **Real-time Collaborative Drawing** - Multiple users can draw simultaneously with WebSocket synchronization
+- 🔐 **User Authentication** - Secure JWT-based authentication with password hashing
+- 💾 **Persistent Storage** - Save drawings to PostgreSQL database
+- 📱 **Responsive UI** - Modern Next.js 15 frontend with Tailwind CSS
+- 🚀 **Monorepo Architecture** - Organized with pnpm workspaces and Turbo
+- 🐳 **Docker Ready** - Containerized services with docker-compose
+- 📝 **Type Safe** - 100% TypeScript codebase
+- ⚡ **Fast Builds** - Optimized with Turbo caching
 
-### Apps and Packages
+## 🛠️ Tech Stack
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+### Frontend
+- **Next.js 15.5** - React framework with SSR
+- **React 19** - UI library
+- **TypeScript** - Type safety
+- **Tailwind CSS** - Styling
+- **Socket.io Client** - WebSocket communication
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+### Backend
+- **Node.js 20** - Runtime
+- **Express.js** - REST API framework
+- **WebSocket (ws)** - Real-time communication
+- **JWT** - Authentication
+- **bcrypt** - Password hashing
 
-### Utilities
+### Database
+- **PostgreSQL 16** - Primary database
+- **Prisma** - ORM and migrations
 
-This Turborepo has some additional tools already setup for you:
+### DevOps
+- **Docker & Docker Compose** - Containerization
+- **pnpm** - Package manager
+- **Turbo** - Monorepo build system
+- **TypeScript** - Static typing
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
-```
-
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
-
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
-
-### Develop
-
-To develop all apps and packages, run the following command:
+## 📁 Project Structure
 
 ```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
+Excalidraw/
+├── apps/
+│   ├── excelidraw-frontend/     # Next.js 15 React app
+│   │   ├── app/                 # App directory structure
+│   │   ├── Components/          # React components
+│   │   ├── public/              # Static assets
+│   │   └── package.json
+│   ├── http-backend/            # Express REST API
+│   │   ├── src/
+│   │   │   ├── index.ts         # Server entry point
+│   │   │   └── middleware.ts    # Custom middleware
+│   │   └── package.json
+│   └── ws-backend/              # WebSocket server
+│       ├── src/
+│       │   └── index.ts         # WS server entry
+│       └── package.json
+├── packages/
+│   ├── db/                      # Prisma ORM & migrations
+│   │   ├── prisma/
+│   │   │   ├── schema.prisma    # Database schema
+│   │   │   └── migrations/      # DB migrations
+│   │   └── package.json
+│   ├── common/                  # Shared TypeScript types
+│   ├── backend-common/          # Backend utilities
+│   ├── ui/                      # Shared React components
+│   ├── typescript-config/       # Shared tsconfig
+│   └── eslint-config/           # Shared ESLint config
+├── docker-compose.yml           # Service orchestration
+├── pnpm-workspace.yaml          # Workspace config
+├── turbo.json                   # Build configuration
+├── package.json                 # Root package
+└── README.md                    # This file
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+## 🚀 Quick Start
 
+### Prerequisites
+
+- **Node.js** 18+ ([Download](https://nodejs.org/))
+- **pnpm** 9.0+ 
+  ```bash
+  npm install -g pnpm@9.0.0
+  ```
+- **PostgreSQL** 16+ (for local development)
+- **Docker & Docker Compose** (for containerized setup)
+
+### Option 1: Local Development
+
+1. **Clone and setup**
+   ```bash
+   git clone <repo-url>
+   cd Excalidraw
+   pnpm install
+   ```
+
+2. **Configure environment**
+   ```bash
+   # Create .env in root
+   echo "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/excalidraw" > .env
+   echo "JWT_SECRET=your-secret-key" >> .env
+   ```
+
+3. **Setup database**
+   ```bash
+   cd packages/db
+   npx prisma migrate dev
+   npx prisma generate
+   cd ../..
+   ```
+
+4. **Start development**
+   ```bash
+   pnpm dev
+   ```
+
+   Services will start:
+   - Frontend: http://localhost:3000
+   - HTTP API: http://localhost:3001
+   - WebSocket: ws://localhost:8080
+
+### Option 2: Docker (Recommended)
+
+```bash
+git clone <repo-url>
+cd Excalidraw
+docker compose up -d --build
 ```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
+Access at http://localhost:3000
+
+See [README.docker.md](README.docker.md) for detailed Docker guide.
+
+## 💻 Development
+
+### Install Dependencies
+```bash
+pnpm install
 ```
 
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
+### Start Dev Server
+```bash
+pnpm dev
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
+### Build for Production
+```bash
+pnpm build
 ```
 
-## Useful Links
+### Type Checking
+```bash
+pnpm check-types
+```
 
-Learn more about the power of Turborepo:
+### Linting & Formatting
+```bash
+pnpm lint          # Run ESLint
+pnpm format        # Format with Prettier
+```
 
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+### Run Specific App
+```bash
+pnpm dev --filter=excelidraw-frontend
+pnpm dev --filter=http-backend
+pnpm dev --filter=ws-backend
+```
+
+## 📋 Scripts
+
+All scripts run via `pnpm` in the root directory:
+
+| Script | Purpose |
+|--------|---------|
+| `pnpm dev` | Start all services in dev mode |
+| `pnpm build` | Build all apps & packages for production |
+| `pnpm lint` | Run ESLint on all code |
+| `pnpm format` | Format code with Prettier |
+| `pnpm check-types` | TypeScript type checking |
+
+Database scripts (from `packages/db`):
+```bash
+npx prisma migrate dev     # Create & apply migrations
+npx prisma generate        # Generate Prisma client
+npx prisma studio         # Open database GUI
+```
+
+## 🐳 Docker Deployment
+
+Quick start with Docker:
+```bash
+docker compose up -d --build
+```
+
+**Services:**
+- Frontend: http://localhost:3000
+- API: http://localhost:3001
+- WebSocket: ws://localhost:8080
+- Database: localhost:5432
+
+**Useful Docker Commands:**
+```bash
+# View logs
+docker compose logs -f http-backend
+docker compose logs -f ws-backend
+
+# Stop services
+docker compose down
+
+# Rebuild specific service
+docker compose up -d --build http-backend
+```
+
+See [README.docker.md](README.docker.md) for complete Docker documentation.
+
+## 🗄️ Database
+
+### Schema Overview
+
+The database includes tables for:
+- **Users** - User accounts with hashed passwords
+- **Drawings** - Persisted drawing data
+- **Sessions** - User session management
+
+### Migrations
+
+Migrations are in `packages/db/prisma/migrations/`. To create a new migration:
+
+```bash
+cd packages/db
+npx prisma migrate dev --name your_migration_name
+```
+
+### Access Database
+
+Local PostgreSQL:
+```bash
+psql postgresql://postgres:postgres@localhost:5432/excalidraw
+```
+
+Docker:
+```bash
+docker compose exec db psql -U postgres -d excalidraw
+```
+
+## 🏗️ Architecture
+
+### Monorepo Structure
+- Uses **pnpm workspaces** for dependency management
+- Uses **Turbo** for intelligent build caching
+- Shared packages reduce code duplication
+
+### Service Architecture
+```
+┌─────────────────────────────────────┐
+│      Next.js Frontend (3000)         │
+│  - User Interface                    │
+│  - Drawing Canvas                    │
+│  - Real-time Sync via WebSocket      │
+└──────────────┬──────────────────────┘
+               │
+     ┌─────────┴─────────┐
+     │                   │
+┌────▼────────┐    ┌────▼────────┐
+│ HTTP API    │    │  WebSocket   │
+│ (3001)      │    │  (8080)      │
+│ - Auth      │    │ - Real-time  │
+│ - CRUD      │    │ - Drawing    │
+│ - JWT       │    │ - Sync       │
+└────┬────────┘    └────┬────────┘
+     │                   │
+     └─────────┬─────────┘
+               │
+        ┌──────▼──────┐
+        │ PostgreSQL   │
+        │ (5432)       │
+        │ - Users      │
+        │ - Drawings   │
+        └──────────────┘
+```
+
+## 🤝 Contributing
+
+1. Create a feature branch
+   ```bash
+   git checkout -b feature/amazing-feature
+   ```
+
+2. Make your changes and commit
+   ```bash
+   git add .
+   git commit -m "Add amazing feature"
+   ```
+
+3. Run checks before pushing
+   ```bash
+   pnpm lint
+   pnpm format
+   pnpm check-types
+   pnpm build
+   ```
+
+4. Push and create pull request
+   ```bash
+   git push origin feature/amazing-feature
+   ```
+
+## 📄 License
+
+MIT License - feel free to use this project for personal or commercial purposes.
+
+## 🆘 Troubleshooting
+
+**Port Already in Use?**
+```bash
+# Kill process on port 3000
+lsof -i :3000 | grep LISTEN | awk '{print $2}' | xargs kill -9
+```
+
+**Database Connection Issues?**
+```bash
+# Verify PostgreSQL is running
+psql --version
+psql postgresql://postgres:postgres@localhost:5432/excalidraw
+```
+
+**Node Modules Issues?**
+```bash
+# Clean install
+pnpm store prune
+rm -rf node_modules packages/*/node_modules
+pnpm install
+```
+
+For more help, see [README.docker.md](README.docker.md) for Docker-specific issues.
+
+---
+
+**Happy Drawing! 🎨**
